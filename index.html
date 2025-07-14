@@ -380,10 +380,20 @@
           roommateList.innerHTML = '';
           result.data.forEach(person => {
             const div = document.createElement('div');
-            div.className = "p-2 border-b";
-            div.innerHTML = `<p><strong>Name:</strong> ${person.name}</p><p><strong>Admission No.:</strong> ${person.admission_no}</p>`;
+            div.className = `
+              bg-white text-gray-800 dark:bg-white/10 dark:text-white 
+              backdrop-blur-md border border-gray-200 dark:border-white/20 
+              rounded-xl p-4 mb-4 shadow-md transition hover:scale-[1.02] duration-200
+            `;
+
+            div.innerHTML = `
+              <p class="text-lg font-semibold mb-1">👤 <span class="text-blue-600 dark:text-blue-300">${person.name}</span></p>
+              <p class="text-sm text-gray-700 dark:text-gray-300">🎓 Admission No: <span class="font-medium">${person.admission_no}</span></p>
+            `;
+
             roommateList.appendChild(div);
           });
+
           confetti({ particleCount: 120, spread: 90, origin: { y: 0.8 } });
           modal.classList.remove('hidden');
         } else {
