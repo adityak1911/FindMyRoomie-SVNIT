@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roommate Finder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .fade-in { animation: fadeIn 1s ease forwards; }
+    .slide-up { animation: slideUp 1s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .animate-scale-in { animation: scaleIn 0.3s ease-out; }
+  </style>
+</head>
+<body class="m-0 p-0 font-sans relative text-white">
+  <div class="relative h-screen w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="relative z-10 flex items-center justify-center h-full px-4">
+      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-lg p-8 w-full max-w-md fade-in slide-up">
+        <h1 class="text-3xl md:text-4xl font-semibold mb-6 text-center">Find Your Roommate</h1>
+        <select id="hostelSelect" class="w-full p-3 mb-4 rounded-xl bg-white/20 text-white placeholder-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
+          <option value="" disabled selected class="text-gray-300">Select Hostel</option>
+          <option class="text-black" value="ABVP BHAWAN">ABVP BHAWAN</option>
+          <option class="text-black" value="BHABHA BHAWAN">BHABHA BHAWAN</option>
+          <option class="text-black" value="SWAMI BHAWAN">SWAMI BHAWAN</option>
+          <option class="text-black" value="TAGORE BHAWAN">TAGORE BHAWAN</option>
+          <option class="text-black" value="MTB">MTB</option>
+        </select>
+        <input id="roomInput" type="text" placeholder="Enter Room Number" class="w-full p-3 mb-2 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300" />
+        <p id="errorMsg" class="text-red-400 text-sm mb-4 hidden">Room number must include at least one letter and two digits, e.g., C100, BF16, A104.</p>
+        <button id="findBtn" class="w-full py-3 bg-white/90 text-black font-bold rounded-xl transition transform hover:scale-105 hover:bg-white hover:shadow-xl duration-300">Find Your Roommate</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-20 hidden">
+    <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-black relative animate-scale-in">
+      <button id="closeModal" aria-label="Close" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <h2 class="text-2xl font-semibold mb-4 text-center">Your Roommate</h2>
+      <p class="mb-2"><span class="font-semibold">Name:</span> <span id="mateName"></span></p>
+      <p><span class="font-semibold">Admission No.:</span> <span id="mateAdmn"></span></p>
+      <div class="mt-4 text-center">
+        <a href="#" class="text-blue-500 hover:underline text-sm">🎉 Rate your experience!</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="memeModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-20 hidden">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-black relative animate-scale-in text-center">
+      <button id="closeMemeModal" aria-label="Close" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <h2 class="text-xl font-semibold mb-2">Bahot tezz ho rahe ho 🤣</h2>
+      <img src="https://media.giphy.com/media/3og0IPxMM0erATueVW/giphy.gif" alt="Funny Meme" class="rounded-xl mx-auto">
+    </div>
+  </div>
+
+  <footer class="absolute bottom-4 w-full text-center text-white text-sm fade-in">
+    Made with ❤️ by Aditya Kumar, DoP 2027
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    const findBtn   = document.getElementById('findBtn');
+    const roomInput = document.getElementById('roomInput');
+    const hostelSelect = document.getElementById('hostelSelect');
+    const errorMsg  = document.getElementById('errorMsg');
+    const modal     = document.getElementById('modal');
+    const closeBtn  = document.getElementById('closeModal');
+    const memeModal = document.getElementById('memeModal');
+    const closeMemeModal = document.getElementById('closeMemeModal');
+
+    const roomRegex = /^(?=.*[A-Za-z])(?=(?:.*\d){2,})[A-Za-z0-9]+$/;
+
+    findBtn.addEventListener('click', async () => {
+      const roomVal = roomInput.value.trim();
+      const hostelVal = hostelSelect.value;
+
+      if (!roomRegex.test(roomVal)) {
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+      errorMsg.classList.add('hidden');
+
+      if (hostelVal === "MTB") {
+        memeModal.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const response = await fetch('https://api.example.com/find-roommate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ hostel: hostelVal, room: roomVal })
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          document.getElementById('mateName').textContent = result.data.name;
+          document.getElementById('mateAdmn').textContent = result.data.admission_no;
+          confetti({ particleCount: 120, spread: 90, origin: { y: 0.8 } });
+          modal.classList.remove('hidden');
+        } else {
+          alert(result.message || "Could not find your roommate");
+        }
+      } catch (error) {
+        alert("Error contacting server. Please try again later.");
+      }
+    });
+
+    closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+    closeMemeModal.addEventListener('click', () => memeModal.classList.add('hidden'));
+    memeModal.addEventListener('click', (e) => { if (e.target === memeModal) memeModal.classList.add('hidden'); });
+  </script>
+</body>
+</html>
