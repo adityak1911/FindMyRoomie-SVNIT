@@ -1,0 +1,2 @@
+# FindMyRoomie-SVNIT
+FindMyRoomie is a sleek, one-page web app built for hostel students to instantly discover their roommates — all by simply selecting their hostel and entering a room number. With a modern UI, smooth animations, and a clean, distraction-free layout, FindMyRoomie makes connecting with your roomie just a click away.  Whether you're a first-year student or just settling into a new room, FindMyRoomie helps you connect faster, feel at home sooner, and start your hostel journey with confidence.
