@@ -136,8 +136,11 @@
       <!-- Hostel Select -->
       <select id="hostelSelect" class="w-full p-3 mb-4 rounded-xl bg-white/20 text-white placeholder-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
         <option value="" disabled selected class="text-gray-300">🏠 Select Hostel</option>
+        <option class="text-black" value="BHABHA BHAWAN">BHABHA BHAWAN</option>
+        <option class="text-black" value="TAGORE BHAWAN">TAGORE BHAWAN</option>
         <option class="text-black" value="SWAMI BHAWAN">SWAMI BHAWAN</option>
         <option class="text-black" value="NEHRU BHAWAN">NEHRU BHAWAN</option>
+        <option class="text-black" value="ABV BHAWAN">ABV BHAWAN</option>
         <option class="text-black" value="MTB">MTB</option>
       </select>
 
@@ -254,6 +257,23 @@
 
         <input type="text" id="contrib-friend-admno" placeholder="Your / Friend's Admission No. 🔢"
           class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+        
+        <!-- Hostel Select Dropdown -->
+
+        <select id="contrib-hostel" 
+          class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition
+                bg-white text-gray-800">
+          <option value="" disabled selected class="text-gray-400 bg-white">
+            🏠 Select Your / Friend's Hostel
+          </option>
+          <option value="BHABHA BHAWAN" class="text-gray-800 bg-white">BHABHA BHAWAN</option>
+          <option value="TAGORE BHAWAN" class="text-gray-800 bg-white">TAGORE BHAWAN</option>
+          <option value="SWAMI BHAWAN" class="text-gray-800 bg-white">SWAMI BHAWAN</option>
+          <option value="NEHRU BHAWAN" class="text-gray-800 bg-white">NEHRU BHAWAN</option>
+          <option value="ABV BHAWAN" class="text-gray-800 bg-white">ABV BHAWAN</option>
+          <option value="MTB" class="text-gray-800 bg-white">MTB</option>
+        </select>
+
 
         <input type="text" id="contrib-room-no" placeholder="Your / Friend's Room No. 🚪"
           class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
@@ -415,7 +435,23 @@
           confetti({ particleCount: 120, spread: 90, origin: { y: 0.8 } });
           modal.classList.remove('hidden');
         } else {
-          showError(result.message || "Could not find your roommate");
+          
+            showError(`
+              😶‍🌫️ No roommates found! Maybe your data isn't with us. 
+              <br />Help the gang out by contributing ✨
+              <br />
+              <button
+                      id="contributeBtn"
+                      class="mt-4 px-4 py-2 rounded-lg text-white font-semibold 
+                            bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 
+                            shadow-lg shadow-pink-500/50 hover:shadow-xl hover:scale-105 
+                            transition-all duration-300 animate-pulse ring-2 ring-white/20"
+                      onClick="contributeModal.classList.remove('hidden');errorModal.classList.add('hidden')"
+                    >
+                      💾 Contribute Data
+                    </button>
+            `);
+
         }
       } catch (error) {
         showError("Error contacting server. Please try again later.");
@@ -425,7 +461,7 @@
     });
 
     function showError(msg) {
-      errorMessage.textContent = msg;
+      errorMessage.innerHTML = msg;
       errorModal.classList.remove('hidden');
     }
 
@@ -587,31 +623,89 @@
 
 <script>
 document.getElementById('contrib-submit').addEventListener('click', async () => {
-  const name = document.getElementById('contrib-name').value.trim();
-  const email = document.getElementById('contrib-email').value.trim();
-  const admNo = document.getElementById('contrib-admno').value.trim();
-  const friendName = document.getElementById('contrib-friend-name').value.trim();
-  const friendAdmNo = document.getElementById('contrib-friend-admno').value.trim();
-  const roomNo = document.getElementById('contrib-room-no').value.trim();
 
-  if (!name || !friendName || !roomNo) {
-    const genZFails = [
-      "Yo, missing fields 🫠 — we need more deets!",
-      "Broski, you skipped something. No cap, fill it up!",
-      "Can't submit ghost info 👻. Fill the blanks!"
-    ];
-    errorMessage.textContent = genZFails[Math.floor(Math.random() * genZFails.length)];
-    errorModal.classList.remove('hidden');
-    return;
-  }
+    const name = document.getElementById('contrib-name').value.trim();
+    const email = document.getElementById('contrib-email').value.trim();
+    const admNo = document.getElementById('contrib-admno').value.trim();
+    const friendName = document.getElementById('contrib-friend-name').value.trim();
+    const friendAdmNo = document.getElementById('contrib-friend-admno').value.trim();
+    const roomNo = document.getElementById('contrib-room-no').value.trim();
+    const hostel = document.getElementById('contrib-hostel').value;
 
-  const formData = new FormData();
-  formData.append('contributor_name', name);
-  formData.append('contributor_email', email);
-  formData.append('contributor_admno', admNo);
-  formData.append('friend_name', friendName);
-  formData.append('friend_admno', friendAdmNo);
-  formData.append('room_no', roomNo);
+    const genZMessages = {
+      name: [
+        "Need that name fam 👀",
+        "Real name. Not vibes. Drop it in.",
+        "Name's a must — don’t ghost 🧑‍🚀"
+      ],
+      email: [
+        "Email check! We ain’t sending pigeons 🕊️",
+        "Put in a real email. We swear, no spam 😇",
+        "No cap, we need a contact point 📬"
+      ],
+      admNo: [
+        "Admission No. missing — you sus 🎭",
+        "Drop that adm no. like it’s hot 🔥",
+        "Bruh. You forgot your ID? 😩"
+      ],
+      friendName: [
+        "Friend’s name pls. Don't gatekeep 👯",
+        "Roomie’s name? We not psychic 🧠",
+        "No name, no fame 🫥"
+      ],
+      friendAdmNo: [
+        "We need your friend’s adm no. 📇",
+        "No ID, no vibe check 🚫",
+        "Put in their digits (academic, ofc) 💯"
+      ],
+      roomNo: [
+        "Room number? You tryna hide? 🕵️",
+        "How we gonna find your roomie without a room? 🏠",
+        "Drop the digits, not the ball 🏀"
+      ],
+      hostel: [
+        "Hostel vibes? Select one first 🏨",
+        "We need a location for this mission 🚀",
+        "Pick the hostel before we proceed, chief 🧭"
+      ]
+    };
+
+
+    // Helper to show error and return false
+    function showFieldError(msgArray) {
+      errorMessage.textContent = msgArray[Math.floor(Math.random() * msgArray.length)];
+      errorModal.classList.remove('hidden');
+      return false;
+    }
+
+    // Validations
+    if (!name) return showFieldError(genZMessages.name);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) return showFieldError(genZMessages.email);
+
+    if (!admNo) return showFieldError(genZMessages.admNo);
+
+    if (!friendName) return showFieldError(genZMessages.friendName);
+
+    if (!friendAdmNo) return showFieldError(genZMessages.friendAdmNo);
+
+    if (!roomNo || roomNo.length < 2) return showFieldError(genZMessages.roomNo);
+
+    if (!hostel) return showFieldError(genZMessages.hostel);
+
+
+    // Submit if all good
+    const formData = new FormData();
+    formData.append('contributor_name', name);
+    formData.append('contributor_email', email);
+    formData.append('contributor_admno', admNo);
+    formData.append('friend_name', friendName);
+    formData.append('friend_admno', friendAdmNo);
+    formData.append('room_no', roomNo);
+    formData.append('hostel', hostel);
+
+
 
   try {
     const res = await fetch('https://nearo.in/findroomie/submit_contribution.php', {
