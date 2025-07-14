@@ -155,7 +155,7 @@
       <h2 class="text-2xl font-semibold mb-4 text-center">Your Roommate(s)</h2>
       <div id="roommateList" class="space-y-2"></div>
       <div class="mt-4 text-center">
-        <a href="#" class="text-blue-500 hover:underline text-sm">🎉 Rate your experience!</a>
+        <a href="#" id="rateExperienceBtn" class="text-blue-500 hover:underline text-sm">🎉 Rate your experience!</a>
       </div>
       
 
@@ -423,6 +423,14 @@
 
     moreOptionsBtn.addEventListener('click', () => {
       moreOptions.classList.toggle('hidden');
+    });
+
+
+
+    const rateExperienceBtn = document.getElementById('rateExperienceBtn');
+
+    rateExperienceBtn.addEventListener('click', () => {
+      feedbackModal.classList.remove('hidden'); // Show the feedback modal
     });
 
 
