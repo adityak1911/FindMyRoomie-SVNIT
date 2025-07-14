@@ -114,13 +114,16 @@
     <div class="bg-white rounded-2xl p-8 max-w-md w-full text-black relative animate-scale-in">
       <button onclick="feedbackModal.classList.add('hidden')" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
       <h2 class="text-2xl font-semibold mb-4 text-center">Submit Feedback</h2>
-      <input type="text" placeholder="Your Name" class="w-full p-2 mb-2 border rounded" />
-      <input type="email" placeholder="Your Email" class="w-full p-2 mb-2 border rounded" />
-      <input type="text" placeholder="Your Admission No." class="w-full p-2 mb-2 border rounded" />
-      <textarea placeholder="Your Feedback" class="w-full p-2 border rounded"></textarea>
-      <button class="mt-4 w-full py-2 bg-blue-600 text-white rounded">Submit</button>
+
+      <input id="feedback-name" type="text" placeholder="Your Name" class="w-full p-2 mb-2 border rounded" />
+      <input id="feedback-email" type="email" placeholder="Your Email" class="w-full p-2 mb-2 border rounded" />
+      <input id="feedback-admno" type="text" placeholder="Your Admission No." class="w-full p-2 mb-2 border rounded" />
+      <textarea id="feedback-comments" placeholder="Your Feedback" class="w-full p-2 border rounded"></textarea>
+
+      <button id="feedback-submit" class="mt-4 w-full py-2 bg-blue-600 text-white rounded">Submit</button>
     </div>
   </div>
+
 
   <!-- Contribute Modal -->
   <div id="contributeModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-30 hidden">
@@ -283,6 +286,7 @@
 
 
     closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
     closeMemeModal.addEventListener('click', () => memeModal.classList.add('hidden'));
     memeModal.addEventListener('click', (e) => { if (e.target === memeModal) memeModal.classList.add('hidden'); });
@@ -290,7 +294,69 @@
     moreOptionsBtn.addEventListener('click', () => {
       moreOptions.classList.toggle('hidden');
     });
+
+
+
+    // feedback 
+
+    document.getElementById('feedback-submit').addEventListener('click', async () => {
+      const name = document.getElementById('feedback-name').value.trim();
+      const email = document.getElementById('feedback-email').value.trim();
+      const admNo = document.getElementById('feedback-admno').value.trim();
+      const comments = document.getElementById('feedback-comments').value.trim();
+
+      if (!name || !comments) {
+        const messages = [
+          "Bruh 😩, name and feedback can't be empty!",
+          "Yo 😵‍💫 say something before submitting!",
+          "Can't post a blank vibe, try again ✍️"
+        ];
+        errorMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
+        errorModal.classList.remove('hidden');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('student_name', name);
+      formData.append('email_id', email);
+      formData.append('rating', 4); // Static rating for now
+      formData.append('comments', `Admission No: ${admNo}\n\n${comments}`);
+
+      try {
+        const res = await fetch('https://nearo.in/findroomie/submit_feedback.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          document.getElementById('feedbackModal').classList.add('hidden');
+          showConfirmation('feedback');
+
+          // Clear form fields
+          ['feedback-name', 'feedback-email', 'feedback-admno', 'feedback-comments'].forEach(id => {
+            document.getElementById(id).value = '';
+          });
+        } else {
+          const failMsgs = [
+            "Yikes 😬... Something went wrong. Try again in a bit.",
+            "Oops! 🛠️ That didn’t land. Refresh vibes and retry.",
+            "Server said nope 😕... try again, bestie."
+          ];
+          errorMessage.textContent = failMsgs[Math.floor(Math.random() * failMsgs.length)];
+          errorModal.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error(err);
+        errorMessage.textContent = "🚨 Whoa, total fail. Something's off on the server.";
+        errorModal.classList.remove('hidden');
+      }
+    });
+
     feedbackBtn.addEventListener('click', () => feedbackModal.classList.remove('hidden'));
+    
+    
     contributeBtn.addEventListener('click', () => contributeModal.classList.remove('hidden'));
   </script>
 
@@ -313,11 +379,6 @@
       confetti({ particleCount: 120, spread: 70, origin: { y: 0.8 } });
       confirmationModal.classList.remove('hidden');
     }
-
-    document.querySelector('#feedbackModal button.bg-blue-600').addEventListener('click', () => {
-      feedbackModal.classList.add('hidden');
-      showConfirmation('feedback');
-    });
 
     document.querySelector('#contributeModal button.bg-green-600').addEventListener('click', () => {
       contributeModal.classList.add('hidden');
