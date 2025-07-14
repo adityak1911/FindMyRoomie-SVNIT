@@ -130,13 +130,16 @@
     <div class="bg-white rounded-2xl p-8 max-w-md w-full text-black relative animate-scale-in">
       <button onclick="contributeModal.classList.add('hidden')" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
       <h2 class="text-2xl font-semibold mb-4 text-center">Contribute Roommate Data</h2>
-      <input type="text" placeholder="Your Name" class="w-full p-2 mb-2 border rounded" />
-      <input type="email" placeholder="Your Email" class="w-full p-2 mb-2 border rounded" />
-      <input type="text" placeholder="Your Admission No." class="w-full p-2 mb-2 border rounded" />
-      <input type="text" placeholder="Friend's Name" class="w-full p-2 mb-2 border rounded" />
-      <input type="text" placeholder="Friend's Admission No." class="w-full p-2 mb-2 border rounded" />
-      <input type="text" placeholder="Friend's Room Number" class="w-full p-2 mb-2 border rounded" />
-      <button class="mt-4 w-full py-2 bg-green-600 text-white rounded">Submit</button>
+
+      <input type="text" id="contrib-name" placeholder="Your Name" class="w-full p-2 mb-2 border rounded">
+      <input type="email" id="contrib-email" placeholder="Your Email" class="w-full p-2 mb-2 border rounded">
+      <input type="text" id="contrib-admno" placeholder="Your Admission No." class="w-full p-2 mb-2 border rounded">
+      <input type="text" id="contrib-friend-name" placeholder="Friend's Name" class="w-full p-2 mb-2 border rounded">
+      <input type="text" id="contrib-friend-admno" placeholder="Friend's Admission No." class="w-full p-2 mb-2 border rounded">
+      <input type="text" id="contrib-room-no" placeholder="Friend's Room Number" class="w-full p-2 mb-2 border rounded">
+      <button id="contrib-submit" class="mt-4 w-full py-2 bg-green-600 text-white rounded">Submit</button>
+
+      
     </div>
   </div>
 
@@ -380,10 +383,72 @@
       confirmationModal.classList.remove('hidden');
     }
 
-    document.querySelector('#contributeModal button.bg-green-600').addEventListener('click', () => {
+    
+  </script>
+
+
+
+<script>
+document.getElementById('contrib-submit').addEventListener('click', async () => {
+  const name = document.getElementById('contrib-name').value.trim();
+  const email = document.getElementById('contrib-email').value.trim();
+  const admNo = document.getElementById('contrib-admno').value.trim();
+  const friendName = document.getElementById('contrib-friend-name').value.trim();
+  const friendAdmNo = document.getElementById('contrib-friend-admno').value.trim();
+  const roomNo = document.getElementById('contrib-room-no').value.trim();
+
+  if (!name || !friendName || !roomNo) {
+    const genZFails = [
+      "Yo, missing fields 🫠 — we need more deets!",
+      "Broski, you skipped something. No cap, fill it up!",
+      "Can't submit ghost info 👻. Fill the blanks!"
+    ];
+    errorMessage.textContent = genZFails[Math.floor(Math.random() * genZFails.length)];
+    errorModal.classList.remove('hidden');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('contributor_name', name);
+  formData.append('contributor_email', email);
+  formData.append('contributor_admno', admNo);
+  formData.append('friend_name', friendName);
+  formData.append('friend_admno', friendAdmNo);
+  formData.append('room_no', roomNo);
+
+  try {
+    const res = await fetch('https://nearo.in/findroomie/submit_contribution.php', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
       contributeModal.classList.add('hidden');
       showConfirmation('contribute');
-    });
-  </script>
+
+      // Reset form
+      ['contrib-name', 'contrib-email', 'contrib-admno', 'contrib-friend-name', 'contrib-friend-admno', 'contrib-room-no']
+        .forEach(id => document.getElementById(id).value = '');
+    } else {
+      const flopMsgs = [
+        "Dang! 🧯 Couldn't save that. Retry?",
+        "Slammed the brakes 🚨 — server hiccup!",
+        "Uhh... not it chief. Try again in a bit 😅"
+      ];
+      errorMessage.textContent = flopMsgs[Math.floor(Math.random() * flopMsgs.length)];
+      errorModal.classList.remove('hidden');
+    }
+  } catch (err) {
+    console.error(err);
+    errorMessage.textContent = "💥 Boom. Something’s broken. Try again?";
+    errorModal.classList.remove('hidden');
+  }
+});
+</script>
+
+
+
 </body>
 </html>
