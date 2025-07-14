@@ -508,10 +508,12 @@
          if (hostelVal === 'MTB') {
             showError(`
               🕵️ You seem sus…  
-              <br />Either you’re not on the list or not a legit MTB resident in room <strong>${room}</strong>.  
+              <br />Either you’re not on the list or not a legit MTB resident of room <strong>${roomVal}</strong>.  
               <br />MTB is locked down for verified residents only.  
               <br />
-              <img src="https://media.tenor.com/DgL9oqXc7RUAAAAd/sus-among-us.gif" alt="sus meme" class="mx-auto mt-3 rounded-xl shadow-md w-40 h-auto" />
+              <img src="https://media.giphy.com/media/ANbD1CCdA3iI8/giphy.gif" 
+                  alt="sus meme" 
+                  class="mx-auto mt-3 rounded-xl shadow-md w-40 h-auto" />
               <br />
               <button
                 id="contributeBtn"
@@ -550,6 +552,7 @@
 
           
       } catch (error) {
+        
         showError("Error contacting server. Please try again later.");
       }
 
