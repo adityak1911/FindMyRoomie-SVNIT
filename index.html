@@ -438,21 +438,65 @@
     // feedback 
 
     document.getElementById('feedback-submit').addEventListener('click', async () => {
+      
       const name = document.getElementById('feedback-name').value.trim();
       const email = document.getElementById('feedback-email').value.trim();
       const admNo = document.getElementById('feedback-admno').value.trim();
       const comments = document.getElementById('feedback-comments').value.trim();
 
-      if (!name || !comments) {
-        const messages = [
-          "Bruh 😩, name and feedback can't be empty!",
-          "Yo 😵‍💫 say something before submitting!",
-          "Can't post a blank vibe, try again ✍️"
+      
+      // Simple email validation regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      // Validate name
+      if (!name) {
+        const nameMessages = [
+          "Oops 😬, what's your name again?",
+          "Name missing — give us something to call you!",
+          "Identity crisis? Drop your name 😅"
         ];
-        errorMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
+        errorMessage.textContent = nameMessages[Math.floor(Math.random() * nameMessages.length)];
         errorModal.classList.remove('hidden');
         return;
       }
+
+      // Validate email
+      if (!email) {
+        const emailMessages = [
+          "Email required 📧 — we promise not to spam!",
+          "Can't send without an address! Drop that email.",
+          "Uh-oh, email's missing — help us reach you!"
+        ];
+        errorMessage.textContent = emailMessages[Math.floor(Math.random() * emailMessages.length)];
+        errorModal.classList.remove('hidden');
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        const invalidEmailMessages = [
+          "That doesn't look like a real email 🤔",
+          "Hmm... your email looks sus 👀",
+          "Check your email — something's off 🕵️‍♂️"
+        ];
+        errorMessage.textContent = invalidEmailMessages[Math.floor(Math.random() * invalidEmailMessages.length)];
+        errorModal.classList.remove('hidden');
+        return;
+      }
+
+      // Validate comments
+      if (!comments) {
+        const commentMessages = [
+          "Don't be shy! Tell us what you think 💬",
+          "Blank feedback? Nah, we want the real tea ☕",
+          "Words, please! Drop some thoughts 📝"
+        ];
+        errorMessage.textContent = commentMessages[Math.floor(Math.random() * commentMessages.length)];
+        errorModal.classList.remove('hidden');
+        return;
+      }
+
+      // If all validations pass, continue submission...
+
 
       const formData = new FormData();
       formData.append('student_name', name);
