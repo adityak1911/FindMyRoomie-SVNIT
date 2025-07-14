@@ -412,8 +412,11 @@
     }
 
 
-    closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
-
+    closeBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');        // Close the main modal
+      feedbackModal.classList.remove('hidden'); // Open the feedback modal
+    });
+    
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
     closeMemeModal.addEventListener('click', () => memeModal.classList.add('hidden'));
     memeModal.addEventListener('click', (e) => { if (e.target === memeModal) memeModal.classList.add('hidden'); });
