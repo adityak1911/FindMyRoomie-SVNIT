@@ -229,64 +229,75 @@
 
 
   <!-- Contribute Modal -->
-  <div id="contributeModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-3xl px-6 py-8 sm:p-10 w-[90%] max-w-md text-black relative shadow-2xl animate-scale-in border border-gray-100">
+    <div id="contributeModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="bg-white rounded-3xl px-6 py-8 sm:p-10 w-[90%] max-w-md text-black relative shadow-2xl animate-scale-in border border-gray-100">
 
-      <!-- Close Button -->
-      <button onclick="contributeModal.classList.add('hidden')"
-        class="absolute top-4 right-4 text-gray-400 hover:text-green-500 text-2xl leading-none transition duration-200">
-        &times;
-      </button>
+        <!-- ❌ Close Button -->
+        <button onclick="contributeModal.classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-emerald-500 text-2xl leading-none transition duration-200">
+          ×
+        </button>
 
-      <!-- Heading -->
-      <h2 class="text-3xl font-extrabold text-center text-gray-800 mb-6 tracking-tight">🤝 Help Us Map Roomies</h2>
+        <!-- 🤝 Heading -->
+        <h2 class="text-3xl font-extrabold text-center text-gray-800 mb-3 tracking-tight">🙌 Help Others Find You (If You’re Looking Too)</h2>
 
-      <!-- Form Fields -->
-      <div class="space-y-4 text-sm">
-        <input type="text" id="contrib-name" placeholder="Your Name ✍️"
-          class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+        <!-- 🔒 Subtext -->
+        <p class="text-sm text-center text-gray-600 mb-5">
+          Add your room or your bestie’s. No spam, no leaks — we keep it chill 🔐
+        </p>
 
-        <input type="email" id="contrib-email" placeholder="Your Email (no spam, promise) 📬"
-          class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+        <!-- 🧭 Type Selector -->
+        <div class="flex justify-center gap-4 mb-5 text-sm font-medium">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="entryType" value="self" checked class="accent-emerald-500" onchange="toggleFriendFields()" />
+            🙋 Just Me
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="entryType" value="both" class="accent-emerald-500" onchange="toggleFriendFields()" />
+            👯 Me + My Roomie
+          </label>
+        </div>
 
-        <input type="text" id="contrib-admno" placeholder="Your Admission No. 🎓"
-          class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+        <!-- 📝 Form Fields -->
+        <div class="space-y-4 text-sm">
+          <input type="text" id="contrib-name" placeholder="Your Name ✍️" class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
 
-        <input type="text" id="contrib-friend-name" placeholder="Your / Friend's Name 🧑‍🤝‍🧑"
-          class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+          <input type="email" id="contrib-email" placeholder="Your Email (No spam, fr) 📬" class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
 
-        <input type="text" id="contrib-friend-admno" placeholder="Your / Friend's Admission No. 🔢"
-          class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
-        
-        <!-- Hostel Select Dropdown -->
+          <input type="text" id="contrib-admno" placeholder="Your Admission No. 🎓" class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
 
-        <select id="contrib-hostel" 
-          class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition
-                bg-white text-gray-800">
-          <option value="" disabled selected class="text-gray-400 bg-white">
-            🏠 Select Your / Friend's Hostel
-          </option>
-          <option value="BHABHA BHAWAN" class="text-gray-800 bg-white">BHABHA BHAWAN</option>
-          <option value="TAGORE BHAWAN" class="text-gray-800 bg-white">TAGORE BHAWAN</option>
-          <option value="SWAMI BHAWAN" class="text-gray-800 bg-white">SWAMI BHAWAN</option>
-          <option value="NEHRU BHAWAN" class="text-gray-800 bg-white">NEHRU BHAWAN</option>
-          <option value="ABV BHAWAN" class="text-gray-800 bg-white">ABV BHAWAN</option>
-          <option value="MTB" class="text-gray-800 bg-white">MTB</option>
-        </select>
+          <!-- Roomie Inputs: Shown only if 'both' is selected -->
+          <div id="roomieFields" class="space-y-4">
+            <input type="text" id="contrib-friend-name" placeholder="Roomie’s Name 🧑‍🤝‍🧑" class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
 
+            <input type="text" id="contrib-friend-admno" placeholder="Roomie’s Admission No. 🔢" class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+          </div>
 
-        <input type="text" id="contrib-room-no" placeholder="Your / Friend's Room No. 🚪"
-          class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+          <!-- Hostel Dropdown -->
+          <select id="contrib-hostel" class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 bg-white text-gray-800 outline-none transition">
+            <option value="" disabled selected>🏠 Choose Hostel</option>
+            <option value="BHABHA BHAWAN">BHABHA BHAWAN</option>
+            <option value="TAGORE BHAWAN">TAGORE BHAWAN</option>
+            <option value="SWAMI BHAWAN">SWAMI BHAWAN</option>
+            <option value="NEHRU BHAWAN">NEHRU BHAWAN</option>
+            <option value="ABV BHAWAN">ABV BHAWAN</option>
+            <option value="MTB">MTB</option>
+          </select>
+
+          <input type="text" id="contrib-room-no" placeholder="Room No. 🚪" class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+        </div>
+
+        <!-- 🚀 Submit Button -->
+        <button id="contrib-submit" class="mt-6 w-full py-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300 text-lg">
+          ➕ I’m Looking for my Roommate
+        </button>
+
+        <!-- ✅ Trust Message -->
+        <p class="text-xs text-center text-gray-400 mt-3">
+          This is an open community project. 💚
+        </p>
       </div>
-
-      <!-- Submit Button -->
-      <button id="contrib-submit"
-        class="mt-6 w-full py-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300">
-        🚀 Submit Roomie Info
-      </button>
-
     </div>
-  </div>
+
 
 
   <div id="confirmationModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-40 hidden">
@@ -624,6 +635,14 @@
 <script>
 document.getElementById('contrib-submit').addEventListener('click', async () => {
 
+    const entryType = document.querySelector('input[name="entryType"]:checked').value;
+
+    if (entryType === 'self') {
+      document.getElementById('contrib-friend-name').value = document.getElementById('contrib-name').value;
+      document.getElementById('contrib-friend-admno').value = document.getElementById('contrib-admno').value;
+    }
+
+
     const name = document.getElementById('contrib-name').value.trim();
     const email = document.getElementById('contrib-email').value.trim();
     const admNo = document.getElementById('contrib-admno').value.trim();
@@ -739,6 +758,30 @@ document.getElementById('contrib-submit').addEventListener('click', async () => 
 });
 </script>
 
+
+
+
+
+
+<script>
+  function toggleFriendFields() {
+    const entryType = document.querySelector('input[name="entryType"]:checked').value;
+    const roomieFields = document.getElementById('roomieFields');
+
+    if (entryType === 'self') {
+      roomieFields.style.display = 'none';
+    } else {
+      roomieFields.style.display = 'block';
+    }
+  }
+
+  
+
+  // On load, hide friend fields by default
+  document.addEventListener('DOMContentLoaded', () => {
+    toggleFriendFields();
+  });
+</script>
 
 
 </body>
