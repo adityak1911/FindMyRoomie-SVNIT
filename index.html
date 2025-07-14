@@ -95,6 +95,14 @@
 
 
   </style>
+
+  <style>
+  .btn-glow {
+    box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.4);
+    transform: scale(1.02);
+  }
+</style>
+
 </head>
 <body class="m-0 p-0 font-sans relative text-white">
   
@@ -233,7 +241,7 @@
       <div class="bg-white rounded-3xl px-6 py-8 sm:p-10 w-[90%] max-w-md text-black relative shadow-2xl animate-scale-in border border-gray-100">
 
         <!-- ❌ Close Button -->
-        <button onclick="contributeModal.classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-emerald-500 text-2xl leading-none transition duration-200">
+        <button id="contribCloseBtn" onclick="contributeModal.classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-emerald-500 text-2xl leading-none transition duration-200 hidden">
           ×
         </button>
 
@@ -242,7 +250,7 @@
 
         <!-- 🔒 Subtext -->
         <p class="text-sm text-center text-gray-600 mb-5">
-          Add your room or your bestie’s. No spam, no leaks — we keep it chill 🔐
+          Add your room or your bestie’s. No spam — we keep it chill 🔐
         </p>
 
         <!-- 🧭 Type Selector -->
@@ -396,6 +404,18 @@
     const moreOptions = document.getElementById('moreOptions');
 
     const roomRegex = /^(?=.*[A-Za-z])(?=(?:.*\d){2,})[A-Za-z0-9]+$/;
+
+
+
+    roomInput.addEventListener('input', () => {
+    if (roomInput.value.trim() !== '') {
+      findBtn.classList.add('btn-glow', 'hover:scale-105', 'hover:shadow-xl');
+    } else {
+      findBtn.classList.remove('btn-glow', 'hover:scale-105', 'hover:shadow-xl');
+    }
+  });
+
+
 
     findBtn.addEventListener('click', async () => {
       const roomVal = roomInput.value.trim();
@@ -738,6 +758,11 @@ document.getElementById('contrib-submit').addEventListener('click', async () => 
       contributeModal.classList.add('hidden');
       showConfirmation('contribute');
 
+      // ADD THAT USER HAS CONTRIBUTED
+      localStorage.setItem('hasContributed', 'true');
+      // Show close button
+      document.getElementById('contribCloseBtn').classList.remove('hidden');
+
       // Reset form
       ['contrib-name', 'contrib-email', 'contrib-admno', 'contrib-friend-name', 'contrib-friend-admno', 'contrib-room-no']
         .forEach(id => document.getElementById(id).value = '');
@@ -775,11 +800,26 @@ document.getElementById('contrib-submit').addEventListener('click', async () => 
     }
   }
 
+  function initializeContributeModal() {
+    const hasContributed = localStorage.getItem('hasContributed') === 'true';
   
+      
+    if (hasContributed) {
+      // dont open modal if user already contributed
+      const modal = document.getElementById('contributeModal')?.classList.add('hidden');
+    }else{
+      contributeModal.classList.remove('hidden');
+    }
+
+    document.getElementById('contribCloseBtn').classList.toggle('hidden', !hasContributed);
+    
+  }
+
 
   // On load, hide friend fields by default
   document.addEventListener('DOMContentLoaded', () => {
     toggleFriendFields();
+    initializeContributeModal();
   });
 </script>
 
