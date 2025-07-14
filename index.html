@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Roommate Finder</title>
+  <title>FindMyRoomie</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -30,18 +30,24 @@
     <div class="absolute inset-0 bg-black/60"></div>
     <div class="relative z-10 flex items-center justify-center h-full px-4">
       <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-lg p-8 w-full max-w-md fade-in slide-up">
-        <h1 class="text-3xl md:text-4xl font-semibold mb-6 text-center">Find Your Roommate</h1>
+        <h1 class="text-3xl md:text-4xl font-semibold mb-6 text-center">FindMyRoomie</h1>
         <select id="hostelSelect" class="w-full p-3 mb-4 rounded-xl bg-white/20 text-white placeholder-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
           <option value="" disabled selected class="text-gray-300">Select Hostel</option>
-          <option class="text-black" value="ABVP BHAWAN">ABVP BHAWAN</option>
-          <option class="text-black" value="BHABHA BHAWAN">BHABHA BHAWAN</option>
           <option class="text-black" value="SWAMI BHAWAN">SWAMI BHAWAN</option>
+          <option class="text-black" value="TAGORE BHAWAN">NEHRU BHAWAN</option>
           <option class="text-black" value="TAGORE BHAWAN">TAGORE BHAWAN</option>
           <option class="text-black" value="MTB">MTB</option>
         </select>
         <input id="roomInput" type="text" placeholder="Enter Room Number" class="w-full p-3 mb-2 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300" />
-        <p id="errorMsg" class="text-red-400 text-sm mb-4 hidden">Room number must include at least one letter and two digits, e.g., C100, BF16, A104.</p>
+        <p id="errorMsg" class="text-red-400 text-sm mb-4">Room number e.g., C100, BF16, A104, without - or space</p>
         <button id="findBtn" class="w-full py-3 bg-white/90 text-black font-bold rounded-xl transition transform hover:scale-105 hover:bg-white hover:shadow-xl duration-300">Find Your Roommate</button>
+        <div class="mt-4 text-center">
+          <button id="moreOptionsBtn" class="text-white text-sm underline">More +</button>
+          <div id="moreOptions" class="hidden mt-2 space-y-2">
+            <button id="feedbackBtn" class="block w-full text-left text-white underline">Submit a feedback</button>
+            <button id="contributeBtn" class="block w-full text-left text-white underline">Contribute data</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -49,12 +55,14 @@
   <div id="modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-20 hidden">
     <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-black relative animate-scale-in">
       <button id="closeModal" aria-label="Close" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
-      <h2 class="text-2xl font-semibold mb-4 text-center">Your Roommate</h2>
-      <p class="mb-2"><span class="font-semibold">Name:</span> <span id="mateName"></span></p>
-      <p><span class="font-semibold">Admission No.:</span> <span id="mateAdmn"></span></p>
+      
+      <h2 class="text-2xl font-semibold mb-4 text-center">Your Roommate(s)</h2>
+      <div id="roommateList" class="space-y-2"></div>
       <div class="mt-4 text-center">
         <a href="#" class="text-blue-500 hover:underline text-sm">🎉 Rate your experience!</a>
       </div>
+      
+
     </div>
   </div>
 
@@ -63,6 +71,71 @@
       <button id="closeMemeModal" aria-label="Close" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
       <h2 class="text-xl font-semibold mb-2">Bahot tezz ho rahe ho 🤣</h2>
       <img src="https://media.giphy.com/media/3og0IPxMM0erATueVW/giphy.gif" alt="Funny Meme" class="rounded-xl mx-auto">
+    </div>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div id="feedbackModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-30 hidden">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full text-black relative animate-scale-in">
+      <button onclick="feedbackModal.classList.add('hidden')" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <h2 class="text-2xl font-semibold mb-4 text-center">Submit Feedback</h2>
+      <input type="text" placeholder="Your Name" class="w-full p-2 mb-2 border rounded" />
+      <input type="email" placeholder="Your Email" class="w-full p-2 mb-2 border rounded" />
+      <input type="text" placeholder="Your Admission No." class="w-full p-2 mb-2 border rounded" />
+      <textarea placeholder="Your Feedback" class="w-full p-2 border rounded"></textarea>
+      <button class="mt-4 w-full py-2 bg-blue-600 text-white rounded">Submit</button>
+    </div>
+  </div>
+
+  <!-- Contribute Modal -->
+  <div id="contributeModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-30 hidden">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full text-black relative animate-scale-in">
+      <button onclick="contributeModal.classList.add('hidden')" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <h2 class="text-2xl font-semibold mb-4 text-center">Contribute Roommate Data</h2>
+      <input type="text" placeholder="Your Name" class="w-full p-2 mb-2 border rounded" />
+      <input type="email" placeholder="Your Email" class="w-full p-2 mb-2 border rounded" />
+      <input type="text" placeholder="Your Admission No." class="w-full p-2 mb-2 border rounded" />
+      <input type="text" placeholder="Friend's Name" class="w-full p-2 mb-2 border rounded" />
+      <input type="text" placeholder="Friend's Admission No." class="w-full p-2 mb-2 border rounded" />
+      <input type="text" placeholder="Friend's Room Number" class="w-full p-2 mb-2 border rounded" />
+      <button class="mt-4 w-full py-2 bg-green-600 text-white rounded">Submit</button>
+    </div>
+  </div>
+
+  <div id="confirmationModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-40 hidden">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-black relative animate-scale-in text-center">
+      <button id="closeConfirmationModal" aria-label="Close" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <h2 id="confirmationTitle" class="text-xl font-semibold mb-2"></h2>
+      <p id="confirmationMessage" class="text-lg">🎉</p>
+    </div>
+  </div>
+  <!-- Confirmation Modal Template -->
+  <div id="confirmationModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-40 hidden">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-black relative animate-scale-in text-center">
+      <button id="closeConfirmationModal" aria-label="Close" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <h2 id="confirmationTitle" class="text-xl font-semibold mb-2"></h2>
+      <p id="confirmationMessage" class="text-lg">🎉</p>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div id="errorModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-black relative animate-scale-in text-center">
+      <button onclick="errorModal.classList.add('hidden')" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <h2 class="text-xl font-semibold mb-2">Oops! 😬</h2>
+      <p id="errorMessage" class="text-base"></p>
+    </div>
+  </div>
+
+  <!-- Roommates Modal -->
+  <div id="modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-20 hidden">
+    <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-black relative animate-scale-in">
+      <button id="closeModal" aria-label="Close" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <h2 class="text-2xl font-semibold mb-4 text-center">Your Roommate(s)</h2>
+      <div id="roommateList" class="space-y-2"></div>
+      <div class="mt-4 text-center">
+        <a href="#" class="text-blue-500 hover:underline text-sm">🎉 Rate your experience!</a>
+      </div>
     </div>
   </div>
 
@@ -79,7 +152,16 @@
     const modal     = document.getElementById('modal');
     const closeBtn  = document.getElementById('closeModal');
     const memeModal = document.getElementById('memeModal');
+    const roommateList = document.getElementById('roommateList');
+
     const closeMemeModal = document.getElementById('closeMemeModal');
+
+    const feedbackBtn = document.getElementById('feedbackBtn');
+    const contributeBtn = document.getElementById('contributeBtn');
+    const feedbackModal = document.getElementById('feedbackModal');
+    const contributeModal = document.getElementById('contributeModal');
+    const moreOptionsBtn = document.getElementById('moreOptionsBtn');
+    const moreOptions = document.getElementById('moreOptions');
 
     const roomRegex = /^(?=.*[A-Za-z])(?=(?:.*\d){2,})[A-Za-z0-9]+$/;
 
@@ -88,8 +170,8 @@
       const hostelVal = hostelSelect.value;
 
       if (!roomRegex.test(roomVal)) {
-        errorMsg.classList.remove('hidden');
-        return;
+        //errorMsg.classList.remove('hidden');
+        //return;
       }
       errorMsg.classList.add('hidden');
 
@@ -99,31 +181,85 @@
       }
 
       try {
-        const response = await fetch('https://api.example.com/find-roommate', {
+         const formData = new FormData();
+        formData.append('hostel', hostelVal);
+        formData.append('room', roomVal);
+
+
+        const response = await fetch('https://nearo.in/findroomie/findroomie.php', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hostel: hostelVal, room: roomVal })
+          body: formData
         });
 
         const result = await response.json();
-
-        if (result.success && result.data) {
-          document.getElementById('mateName').textContent = result.data.name;
-          document.getElementById('mateAdmn').textContent = result.data.admission_no;
+        
+        if (result.success && Array.isArray(result.data) && result.data.length > 0) {
+          roommateList.innerHTML = '';
+          result.data.forEach(person => {
+            const div = document.createElement('div');
+            div.className = "p-2 border-b";
+            div.innerHTML = `<p><strong>Name:</strong> ${person.name}</p><p><strong>Admission No.:</strong> ${person.admission_no}</p>`;
+            roommateList.appendChild(div);
+          });
           confetti({ particleCount: 120, spread: 90, origin: { y: 0.8 } });
           modal.classList.remove('hidden');
         } else {
-          alert(result.message || "Could not find your roommate");
+          showError(result.message || "Could not find your roommate");
         }
       } catch (error) {
-        alert("Error contacting server. Please try again later.");
+        showError("Error contacting server. Please try again later.");
       }
+
+
     });
+
+    function showError(msg) {
+      errorMessage.textContent = msg;
+      errorModal.classList.remove('hidden');
+    }
+
 
     closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
     closeMemeModal.addEventListener('click', () => memeModal.classList.add('hidden'));
     memeModal.addEventListener('click', (e) => { if (e.target === memeModal) memeModal.classList.add('hidden'); });
+
+    moreOptionsBtn.addEventListener('click', () => {
+      moreOptions.classList.toggle('hidden');
+    });
+    feedbackBtn.addEventListener('click', () => feedbackModal.classList.remove('hidden'));
+    contributeBtn.addEventListener('click', () => contributeModal.classList.remove('hidden'));
+  </script>
+
+  <script>
+    const confirmationModal = document.getElementById('confirmationModal');
+    const confirmationTitle = document.getElementById('confirmationTitle');
+    const confirmationMessage = document.getElementById('confirmationMessage');
+    const closeConfirmationModal = document.getElementById('closeConfirmationModal');
+
+    closeConfirmationModal.addEventListener('click', () => confirmationModal.classList.add('hidden'));
+
+    function showConfirmation(type) {
+      if (type === 'feedback') {
+        confirmationTitle.textContent = "Thanks for the vibes! ✨";
+        confirmationMessage.textContent = "Appreciate the feedback, you're the real MVP 😎🔥 #StayAwesome";
+      } else if (type === 'contribute') {
+        confirmationTitle.textContent = "Data Drop Successful 📦";
+        confirmationMessage.textContent = "You're officially a legend! 🧠💾 Thanks for sharing the roomie scoop 🕵️‍♂️";
+      }
+      confetti({ particleCount: 120, spread: 70, origin: { y: 0.8 } });
+      confirmationModal.classList.remove('hidden');
+    }
+
+    document.querySelector('#feedbackModal button.bg-blue-600').addEventListener('click', () => {
+      feedbackModal.classList.add('hidden');
+      showConfirmation('feedback');
+    });
+
+    document.querySelector('#contributeModal button.bg-green-600').addEventListener('click', () => {
+      contributeModal.classList.add('hidden');
+      showConfirmation('contribute');
+    });
   </script>
 </body>
 </html>
