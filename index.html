@@ -104,32 +104,49 @@
 
   </section>
 
-  <div class="relative h-screen w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');">
-    <div class="absolute inset-0 bg-black/60"></div>
-  
-    <div class="relative z-10 flex items-center justify-center h-full px-4">
-      <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-lg p-8 w-full max-w-md fade-in slide-up">
-        <h1 class="text-3xl md:text-4xl font-semibold mb-6 text-center">FindMyRoomie</h1>
-        <select id="hostelSelect" class="w-full p-3 mb-4 rounded-xl bg-white/20 text-white placeholder-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
-          <option value="" disabled selected class="text-gray-300">Select Hostel</option>
-          <option class="text-black" value="SWAMI BHAWAN">SWAMI BHAWAN</option>
-          <option class="text-black" value="TAGORE BHAWAN">NEHRU BHAWAN</option>
-          <!--option class="text-black" value="TAGORE BHAWAN">TAGORE BHAWAN</option-->
-          <option class="text-black" value="MTB">MTB</option>
-        </select>
-        <input id="roomInput" type="text" placeholder="Enter Room Number" class="w-full p-3 mb-2 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300" />
-        <p id="errorMsg" class="text-red-400 text-sm mb-4">Enter Room number e.g., C100, BF16, A104, without - or space</p>
-        <button id="findBtn" class="w-full py-3 bg-white/90 text-black font-bold rounded-xl transition transform hover:scale-105 hover:bg-white hover:shadow-xl duration-300">Find Your Roommate</button>
-        <div class="mt-4 text-center">
-          <button id="moreOptionsBtn" class="text-white text-sm underline">More +</button>
-          <div id="moreOptions" class="hidden mt-2 space-y-2">
-            <button id="feedbackBtn" class="block w-full text-left text-white underline">Submit a feedback</button>
-            <button id="contributeBtn" class="block w-full text-left text-white underline">Contribute data</button>
-          </div>
+  <div class="relative h-screen w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1950&amp;q=80');">
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/60"></div>
+
+  <!-- Content Wrapper -->
+  <div id="search" class="relative z-10 flex items-center justify-center h-full px-4">
+    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-md text-white animate-fade-in-up">
+
+      <!-- Title -->
+      <h1 class="text-4xl font-bold mb-6 text-center tracking-tight">FindMyRoomie 🔍💫</h1>
+
+      <!-- Hostel Select -->
+      <select id="hostelSelect" class="w-full p-3 mb-4 rounded-xl bg-white/20 text-white placeholder-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
+        <option value="" disabled selected class="text-gray-300">🏠 Select Hostel</option>
+        <option class="text-black" value="SWAMI BHAWAN">SWAMI BHAWAN</option>
+        <option class="text-black" value="TAGORE BHAWAN">NEHRU BHAWAN</option>
+        <option class="text-black" value="MTB">MTB</option>
+      </select>
+
+      <!-- Room Input -->
+      <input id="roomInput" type="text" placeholder="e.g., A104, BF16" class="w-full p-3 mb-2 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
+
+      <!-- Error Message -->
+      <p id="errorMsg" class="text-pink-400 text-sm mb-4 italic">⚠️ Type your room no. without spaces or dashes!</p>
+
+      <!-- Submit Button -->
+      <button id="findBtn" class="w-full py-3 bg-gradient-to-r from-purple-400 via-pink-500 to-red-400 text-black font-bold rounded-xl hover:scale-105 hover:shadow-xl transition-all duration-300">
+        🔎 Find Your Roommate
+      </button>
+
+      <!-- More Options -->
+      <div class="mt-6 text-center">
+        <button id="moreOptionsBtn" class="text-white text-sm underline hover:text-pink-300 transition">More +</button>
+        <div id="moreOptions" class="hidden mt-3 space-y-2">
+          <button id="feedbackBtn" class="block w-full text-left text-white underline hover:text-blue-300 transition">💬 Submit Feedback</button>
+          <button id="contributeBtn" class="block w-full text-left text-white underline hover:text-green-300 transition">🙌 Contribute Data</button>
         </div>
       </div>
+
     </div>
   </div>
+</div>
+
 
   <div id="modal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-20 hidden">
     <div class="bg-white rounded-2xl p-8 max-w-sm w-full text-black relative animate-scale-in">
