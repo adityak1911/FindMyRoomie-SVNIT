@@ -152,11 +152,21 @@
         <option class="text-black" value="MTB">MTB</option>
       </select>
 
+
+      <!-- Your Admission No. (only shown for MTB) -->
+      <input type="text" id="your-admno-input" placeholder="Your Admission No." class="w-full p-3 mb-2 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300 hidden" />
+
       <!-- Room Input -->
-      <input id="roomInput" type="text" placeholder="e.g., A104, BF16, BS05, 502, 411" class="w-full p-3 mb-2 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
+      <input id="roomInput" type="text" placeholder="Room number e.g., A104, BF16, BS05, 502, 411" class="w-full p-3 mb-2 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
 
       <!-- Error Message -->
       <p id="errorMsg" class="text-pink-400 text-sm mb-4 italic">⚠️ Type your room no. without spaces or dashes!</p>
+
+      <!-- MTB Warning (hidden by default) -->
+      <p id="mtb-warning" class="text-xs mt-2 text-yellow-100 font-medium hidden rounded-xl bg-yellow-500/10 backdrop-blur-md border border-yellow-400/30 p-3 shadow-sm">
+        ⚠️ Access Alert: MTB is a restricted zone. Only verified residents can search in this area.
+      </p>
+
 
       <!-- Submit Button -->
       <button id="findBtn" class="w-full py-3 bg-gradient-to-r from-purple-400 via-pink-500 to-red-400 text-black font-bold rounded-xl hover:scale-105 hover:shadow-xl transition-all duration-300">
@@ -168,7 +178,7 @@
         <button id="moreOptionsBtn" class="text-white text-sm underline hover:text-pink-300 transition">More +</button>
         <div id="moreOptions" class="hidden mt-3 space-y-2">
           <button id="feedbackBtn" class="block w-full text-left text-white underline hover:text-blue-300 transition">💬 Submit Feedback</button>
-          <button id="contributeBtn" class="block w-full text-left text-white underline hover:text-green-300 transition">🙌 Contribute Data</button>
+          <button id="contributeBtn" class="block w-full text-left text-white underline hover:text-green-300 transition">🙌 No sign of your roomie yet? Add Youorself</button>
         </div>
       </div>
 
@@ -290,8 +300,15 @@
             <option value="ABV BHAWAN">ABV BHAWAN</option>
             <option value="MTB">MTB</option>
           </select>
-
+          
+          
           <input type="text" id="contrib-room-no" placeholder="Room No. 🚪" class="w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition" />
+          
+          <!-- 🚨 MTB Warning (hidden by default) -->
+          <p id="mtb-warning" class="text-xs mt-2 text-pink-600 font-medium hidden">
+            🚺 Whoa, you're heading into the girlies zone! Only MTB residents can search here. Don’t be sus 😬
+          </p>
+
         </div>
 
         <!-- 🚀 Submit Button -->
@@ -407,6 +424,7 @@
 
 
 
+    // Validate room input on keyup
     roomInput.addEventListener('input', () => {
     if (roomInput.value.trim() !== '') {
       findBtn.classList.add('btn-glow', 'hover:scale-105', 'hover:shadow-xl');
@@ -417,6 +435,19 @@
 
 
 
+  // handle extra input & messaage for MTB
+  const mtbWarning = document.getElementById('mtb-warning');
+  const mtbAdmno = document.getElementById('your-admno-input');
+
+  hostelSelect.addEventListener('change', () => {
+    const isMTB = hostelSelect.value === 'MTB';
+    mtbWarning.classList.toggle('hidden', !isMTB);
+    mtbAdmno.classList.toggle('hidden', !isMTB);
+  });
+
+
+
+    // handle room search
     findBtn.addEventListener('click', async () => {
       const roomVal = roomInput.value.trim();
       const hostelVal = hostelSelect.value;
@@ -468,19 +499,20 @@
         } else {
           
             showError(`
-              😶‍🌫️ No roommates found! Maybe your data isn't with us. 
-              <br />Help the gang out by contributing ✨
+              😅 You’re off the radar!  
+              <br />We couldn’t find you on the roomie map. Maybe you haven’t vibed in yet?  
+              <br />Be part of the crew, not just the crowd 👥 
               <br />
               <button
-                      id="contributeBtn"
-                      class="mt-4 px-4 py-2 rounded-lg text-white font-semibold 
-                            bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 
-                            shadow-lg shadow-pink-500/50 hover:shadow-xl hover:scale-105 
-                            transition-all duration-300 animate-pulse ring-2 ring-white/20"
-                      onClick="contributeModal.classList.remove('hidden');errorModal.classList.add('hidden')"
-                    >
-                      💾 Contribute Data
-                    </button>
+                id="contributeBtn"
+                class="mt-4 px-4 py-2 rounded-lg text-white font-semibold 
+                      bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 
+                      shadow-lg shadow-pink-500/50 hover:shadow-xl hover:scale-105 
+                      transition-all duration-300 animate-pulse ring-2 ring-white/20"
+                onClick="contributeModal.classList.remove('hidden'); errorModal.classList.add('hidden')"
+              >
+                📝 Add Yourself
+              </button>
             `);
 
         }
@@ -640,8 +672,8 @@
         confirmationTitle.textContent = "Thanks for the vibes! ✨";
         confirmationMessage.textContent = "Appreciate the feedback, you're the real MVP 😎🔥 #StayAwesome";
       } else if (type === 'contribute') {
-        confirmationTitle.textContent = "Data Drop Successful 📦";
-        confirmationMessage.textContent = "You're officially a legend! 🧠💾 Thanks for sharing the roomie scoop 🕵️‍♂️";
+        confirmationTitle.textContent = "You’re On the List ✅";
+        confirmationMessage.textContent = "Squad spotted 👀 Thanks for putting yourself (or your friend) on the roomie map 🗺️💫";
       }
       confetti({ particleCount: 120, spread: 70, origin: { y: 0.8 } });
       confirmationModal.classList.remove('hidden');
