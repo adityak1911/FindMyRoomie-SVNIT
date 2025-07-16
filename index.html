@@ -233,20 +233,53 @@
 
 
   
-  <div id="mtbModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
-    <div class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg w-full max-w-md">
-      <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">🔒 MTB Verification</h2>
-      <p class="mb-3 text-gray-600 dark:text-gray-300">We need your <strong>Admission Number</strong> and <strong>MTB Room Number</strong> for this search.</p>
+  <div id="mtbModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-xl w-full max-w-md border border-white/10 dark:border-white/10">
+    <h2 class="text-2xl font-bold mb-3 text-gray-900 dark:text-white">
+      🧚‍♀️ Quick MTB Check
+    </h2>
 
-      <input type="text" id="mtb-admno" placeholder="Your Admission No." class="w-full mb-3 px-4 py-2 rounded-lg border dark:border-white/20 bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white" />
-      <input type="text" id="mtb-room" placeholder="Your MTB Room No." class="w-full mb-4 px-4 py-2 rounded-lg border dark:border-white/20 bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white" />
+    <p class="mb-4 text-gray-600 dark:text-gray-300 leading-relaxed">
+      This is a <span class="text-pink-500 font-semibold">verified MTB-only space</span>, and we’re keeping it sus-free 🕵️‍♀️✨
+      Just to make sure it’s really your are MTB resident 💫 enter your <strong>Admission Number</strong> and <strong>Your Room Number</strong> 
+    </p>
 
-      <div class="flex justify-end space-x-3">
-        <button id="cancelMtbModal" class="px-4 py-2 rounded-lg bg-gray-300 dark:bg-white/10 text-gray-800 dark:text-white hover:bg-gray-400 dark:hover:bg-white/20">Cancel</button>
-        <button id="submitMtbModal" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Submit</button>
-      </div>
+    <input 
+      type="text" 
+      id="mtb-admno" 
+      placeholder="🎓 Your Admission Number" 
+      class="w-full mb-3 px-4 py-2 rounded-lg border border-gray-300 dark:border-white/20 bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-400" 
+    />
+
+    <input 
+      type="text" 
+      id="mtb-room" 
+      placeholder="🚪 Your MTB Room Number" 
+      class="w-full mb-5 px-4 py-2 rounded-lg border border-gray-300 dark:border-white/20 bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-400" 
+    />
+
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">
+      🛜 This helps us keep things verified for valid residents 💾
+    </p>
+
+    <div class="flex justify-end space-x-3">
+      <button 
+        id="cancelMtbModal" 
+        class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-white/20 transition"
+      >
+        Maybe later
+      </button>
+
+      <button 
+        id="submitMtbModal" 
+        class="px-4 py-2 rounded-lg bg-pink-500 text-white font-semibold hover:bg-pink-600 transition hover:scale-105"
+      >
+        💅 Show Me my Roomies
+      </button>
     </div>
   </div>
+</div>
+
 
 
 
@@ -255,7 +288,7 @@
     <div class="bg-white rounded-3xl px-6 py-8 sm:p-10 max-w-md w-full text-black relative shadow-2xl animate-scale-in border border-gray-200">
 
       <!-- Close Button -->
-      <button onclick="feedbackModal.classList.add('hidden')"
+      <button onclick="feedbackModal.classList.add('hidden')" id="feedbackCloseBtn"
         class="absolute top-4 right-4 text-gray-400 hover:text-pink-500 text-2xl leading-none transition duration-200">
         &times;
       </button>
@@ -385,7 +418,7 @@
   <!-- Error Modal -->
   <div id="errorModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-black relative animate-scale-in text-center">
-      <button onclick="errorModal.classList.add('hidden')" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+      <button id="error-model-close" onclick="errorModal.classList.add('hidden')" class="absolute top-3 right-3 text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
       <h2 class="text-xl font-semibold mb-2">Oops! 😬</h2>
       <p id="errorMessage" class="text-base"></p>
     </div>
@@ -467,7 +500,6 @@
     const moreOptions = document.getElementById('moreOptions');
 
     
-    const mtbRoomVal = document.getElementById('mtb-room').value.trim();
 
     const roomRegex = /^(?=.*[A-Za-z])(?=(?:.*\d){2,})[A-Za-z0-9]+$/;
 
@@ -500,6 +532,8 @@
       const roomVal = roomInput.value.trim();
       const hostelVal = hostelSelect.value;
       const yourAdmNoval = yourAdmNo.value.trim();
+        
+      const mtbRoomVal = document.getElementById('mtb-room').value.trim();
       // mtbRoomVal
 
       if (!roomRegex.test(roomVal)) {
@@ -565,8 +599,10 @@
           yourAdmNo.value = ''; // Clear admission number input
           mtbAdmno.value = ''; // Clear MTB admission number input
 
+          
+          
+          if (hostelVal === 'MTB' && 'mtb_passed' in result && result.mtb_passed === 0) {
 
-         if (hostelVal === 'MTB') {
             showError(`
               🕵️ You seem sus…  
               <br />Either you’re not on the list or not a legit MTB resident of room <strong>${mtbRoomVal}</strong>.  
@@ -586,7 +622,26 @@
               >
                 🚀 Get Yourself on the List
               </button>
-            `);
+            `, 1);
+          }
+          else if (hostelVal === 'MTB' && 'mtb_passed' in result && result.mtb_passed === 1) {
+
+            showError(`
+                      ✅ You’re verified — but the room’s empty.  
+                      <br />We didn’t find any data for room <strong>${roomVal}</strong>.  
+                      <br />Could be a sync delay or no one's added the info yet.  
+                      <br />
+                      <button
+                        id="contributeBtn"
+                        class="mt-4 px-4 py-2 rounded-lg text-white font-semibold 
+                              bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 
+                              shadow-lg shadow-purple-500/40 hover:shadow-xl hover:scale-105 
+                              transition-all duration-300 animate-pulse ring-2 ring-white/20"
+                        onClick="contributeModal.classList.remove('hidden'); errorModal.classList.add('hidden')"
+                      >
+                        👀 Got Details? Add ’Em
+                      </button>
+                    `, 1);
           }
             else {
             
@@ -601,11 +656,11 @@
                         bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 
                         shadow-lg shadow-pink-500/50 hover:shadow-xl hover:scale-105 
                         transition-all duration-300 animate-pulse ring-2 ring-white/20"
-                  onClick="contributeModal.classList.remove('hidden'); errorModal.classList.add('hidden')"
+                  onClick="contributeModal.classList.remove('hidden'); errorModal.classList.add('hidden');"
                 >
                   📝 Add Yourself
                 </button>
-              `);
+              `, 1);
 
           }
 
@@ -687,17 +742,34 @@
 
 
 
-    function showError(msg) {
+    function showError(msg, ask_feedback=0) {
       errorMessage.innerHTML = msg;
       errorModal.classList.remove('hidden');
+
+      // If feedback is requested, then after closing error modal, open feedback modal
+      if (ask_feedback == 1) {
+        document.getElementById("error-model-close").setAttribute(
+          'onclick',
+          "errorModal.classList.add('hidden'); initializeFeedbackModal();"
+        );
+      } else {
+        document.getElementById("error-model-close").setAttribute(
+          'onclick',
+          "errorModal.classList.add('hidden');"
+        );
+      }
+
+
     }
 
 
     closeBtn.addEventListener('click', () => {
       modal.classList.add('hidden');        // Close the main modal
-      feedbackModal.classList.remove('hidden'); // Open the feedback modal
+      
+      initializeFeedbackModal(1); // Initialize feedback modal // Open the feedback modal
     });
     
+
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
     closeMemeModal.addEventListener('click', () => memeModal.classList.add('hidden'));
     memeModal.addEventListener('click', (e) => { if (e.target === memeModal) memeModal.classList.add('hidden'); });
@@ -809,6 +881,12 @@
           ['feedback-name', 'feedback-email', 'feedback-admno', 'feedback-comments'].forEach(id => {
             document.getElementById(id).value = '';
           });
+          
+          // set feedback given flag
+          localStorage.setItem('hasGivenFeedback', 'true');
+          localStorage.setItem('feedbackTriggerCount', '0');
+
+
         } else {
           const failMsgs = [
             "Yikes 😬... Something went wrong. Try again in a bit.",
@@ -1053,6 +1131,50 @@ document.getElementById('contrib-submit').addEventListener('click', async () => 
   });
 </script>
 
+
+
+<script>
+
+  function initializeFeedbackModal(search_successful = 0) {
+    
+    const feedbackKey = 'hasGivenFeedback';
+    const feedbackCountKey = 'feedbackTriggerCount';
+    const successCountKey = 'successfulSearchCount';
+
+    const hasGivenFeedback = localStorage.getItem(feedbackKey) === 'true';
+    let feedbackCount = parseInt(localStorage.getItem(feedbackCountKey) || '0', 10);
+    let successfulSearchCount = parseInt(localStorage.getItem(successCountKey) || '0', 10);
+
+    // If search was successful, increment success count
+    if (search_successful === 1 && !hasGivenFeedback) {
+      successfulSearchCount += 1;
+      localStorage.setItem(successCountKey, successfulSearchCount.toString());
+
+      // Always ask for feedback if search was successful and feedback not given
+      feedbackModal.classList.remove('hidden');
+    } else {
+      // Normal counter-based logic
+      feedbackCount += 1;
+      const showInterval = hasGivenFeedback ? 8 : 2;
+
+      if (feedbackCount >= showInterval) {
+        feedbackModal.classList.remove('hidden');
+        localStorage.setItem(feedbackCountKey, '0');
+      } else {
+        document.getElementById('feedbackModal')?.classList.add('hidden');
+        localStorage.setItem(feedbackCountKey, feedbackCount.toString());
+      }
+    }
+
+    // Hide close button after 5 successful searches if feedback not yet given
+    const hideClose = !hasGivenFeedback && successfulSearchCount >= 5;
+    document.getElementById('feedbackCloseBtn')?.classList.toggle('hidden', hideClose);
+  }
+
+
+
+
+</script>
 
 
 
