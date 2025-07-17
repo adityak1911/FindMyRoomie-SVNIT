@@ -176,7 +176,7 @@
       <input id="roomInput" type="text" placeholder="Room number e.g., A104, BF16, BS05, 502, 411" class="w-full p-3 mb-2 rounded-xl bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300">
 
       <!-- Error Message -->
-      <p id="errorMsg" class="text-pink-400 text-sm mb-4 italic">⚠️ Type your room no. without spaces or dashes!</p>
+      <p id="errorMsg" class="text-pink-400 text-sm mb-4 italic">⚠️ Type your room no. without spaces or dashes! <br/>Eg:- 502, A104, BF16, BS05, 060</p>
 
       <!-- MTB Warning (hidden by default) -->
       <p id="mtb-warning" class="text-xs mt-2 text-yellow-100 font-medium hidden rounded-xl bg-yellow-500/10 backdrop-blur-md border border-yellow-400/30 p-3 shadow-sm">
@@ -516,19 +516,40 @@
     const moreOptions = document.getElementById('moreOptions');
 
     
-
+    // Room must be alphanumeric only, with at least one letter and at least two digits
     const roomRegex = /^(?=.*[A-Za-z])(?=(?:.*\d){2,})[A-Za-z0-9]+$/;
+
+    // Normalize function: removes all non-alphanumeric characters and uppercases
+    function normalizeRoomNumber(room) {
+      return room.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    }
+
+    // Validate function using the regex above
+    function isValidRoom(room) {
+      return roomRegex.test(room);
+    }
+
 
 
 
     // Validate room input on keyup
     roomInput.addEventListener('input', () => {
-    if (roomInput.value.trim() !== '') {
-      findBtn.classList.add('btn-glow', 'hover:scale-105', 'hover:shadow-xl');
-    } else {
-      findBtn.classList.remove('btn-glow', 'hover:scale-105', 'hover:shadow-xl');
-    }
-  });
+      
+      // Show error if contains space or dash
+      if (roomInput.value.includes(' ') || roomInput.value.includes('-')) {
+        errorMsg.classList.remove('hidden');
+      } else {
+        errorMsg.classList.add('hidden');
+      }
+
+      // Glow button if not empty
+      if (roomInput.value.trim() !== '') {
+        findBtn.classList.add('btn-glow', 'hover:scale-105', 'hover:shadow-xl');
+      } else {
+        findBtn.classList.remove('btn-glow', 'hover:scale-105', 'hover:shadow-xl');
+      }
+    });
+
 
 
 
@@ -555,13 +576,21 @@
 
 
       const mtbRoomVal = document.getElementById('mtb-room').value.trim();
+      
+
       // mtbRoomVal
 
-      if (!roomRegex.test(roomVal)) {
-        //errorMsg.classList.remove('hidden');
-        //return;
+      
+      const normalizedRoom = normalizeRoomNumber(roomVal);
+
+      if (isValidRoom(roomVal)) {            
+          errorMsg.classList.add('hidden');
+      }else{
+        
+        roomInput.value = normalizedRoom;
+        
       }
-      errorMsg.classList.add('hidden');
+
 
       if (hostelVal === "MTB") {
         //memeModal.classList.remove('hidden');
@@ -765,6 +794,12 @@
         return;
       }
 
+      const normalizedMtbRoom = normalizeRoomNumber(mtbRoomVal);
+
+      if (!isValidRoom(mtbRoomVal)) {     
+        document.getElementById('mtb-room').value = normalizedMtbRoom;
+      }
+      
       // All valid — assign and trigger search
       yourAdmNo.value = mtbAdmVal;
       
