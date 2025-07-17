@@ -111,6 +111,12 @@
     box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.4);
     transform: scale(1.02);
   }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
 </style>
 
 </head>
@@ -251,7 +257,7 @@
 
     <p class="mb-4 text-gray-600 dark:text-gray-300 leading-relaxed">
       This is a <span class="text-pink-500 font-semibold">verified MTB-only space</span>, and we’re keeping it sus-free 🕵️‍♀️✨<br>
-      Just to make sure your areally re MTB resident 💫 enter your <strong>Admission Number</strong> and <strong>Your Room Number</strong> 
+      Just to make sure your are really a MTB resident 💫 enter your <strong>Admission Number</strong> and <strong>Your Room Number</strong> 
     </p>
 
     <input 
@@ -542,7 +548,12 @@
       const roomVal = roomInput.value.trim();
       const hostelVal = hostelSelect.value;
       const yourAdmNoval = yourAdmNo.value.trim();
-        
+      
+      // Disable button during processing
+      findBtn.disabled = true;
+      findBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+
       const mtbRoomVal = document.getElementById('mtb-room').value.trim();
       // mtbRoomVal
 
@@ -559,6 +570,8 @@
 
       if (hostelVal === "MTB" && (!yourAdmNoval || !roomVal)) {
         mtbModal.classList.remove('hidden');
+        findBtn.disabled = false;
+        findBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         return;
       }
 
@@ -653,7 +666,18 @@
                       </button>
                     `, 1);
           }
-            else {
+          
+          else if (response.status === 403) {
+            showError(`
+              🚫 Whoa there! Access denied.  
+              <br />${result.message || "You’re not allowed to access this right now."}  
+              <br />If you think this is a mistake, hit up the dev at  
+              <a href="mailto:adityak1911@gmail.com" class="text-blue-500 underline">adityak1911@gmail.com</a>  
+              <br />Stay vibin’, not breakin’ 😎
+            `, 1);
+          }
+
+          else {
             
               showError(`
                 😅 You’re off the radar!  
@@ -680,6 +704,11 @@
       } catch (error) {
         
         showError("Error contacting server. Please try again later.");
+      }finally {
+
+        // Re-enable button after completion (success or fail)
+        findBtn.disabled = false;
+        findBtn.classList.remove('opacity-50', 'cursor-not-allowed');
       }
 
 
